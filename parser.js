@@ -33,12 +33,11 @@ function insertCities(array){
     if(err) throw err;
 
     var cities = array.map(function (el){
-      return {name : el}
+      return {name : el, rnd : Math.random()}
     });
 
     db.collection('cities').insertMany(cities, function (err, docs){
       if(err) throw err;
-      console.log('succesfully saved');
     });
   })
 }
