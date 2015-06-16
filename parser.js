@@ -1,5 +1,6 @@
 var http = require('http'),
-    cheerio = require('cheerio');
+    cheerio = require('cheerio'),
+    MongoClient = require('mongodb').MongoClient;
 
 var pages = {};
 
@@ -30,6 +31,7 @@ function requestPage(host, url, fn){
 var handler = (function (){
   var invoked = 0, lim, cb;
   return {
+
     set : function (n, fn){
       lim = n;
       cb = fn;
@@ -55,11 +57,14 @@ requestPage('www.lonelyplanet.com', '/places', function (page){
   var cities = [];
 
   handler.set(urls.length, function (){
-    //add results to the database
+    
   });
 
   for(var i = 0; i < urls.length; i++){
     requestPage('www.lonelyplanet.com', urls[i], function (page){
+      var alert = page('div.icon--caution--before');
+      if(alert.length) return handler.callback();
+
       var container = page('article.card--destination');
 
       container.each(function (i, el){
