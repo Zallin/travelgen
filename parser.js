@@ -28,6 +28,21 @@ function requestPage(host, url, fn){
   req.end();
 }
 
+function insertCities(array){
+  MongoClient.connect('mongodb://localhost/travel', function (err, db){
+    if(err) throw err;
+
+    var cities = array.map(function (el){
+      return {name : el}
+    });
+
+    db.collection('cities').insertMany(cities, function (err, docs){
+      if(err) throw err;
+      console.log('succesfully saved');
+    });
+  })
+}
+
 var handler = (function (){
   var invoked = 0, lim, cb;
   return {
@@ -57,7 +72,7 @@ requestPage('www.lonelyplanet.com', '/places', function (page){
   var cities = [];
 
   handler.set(urls.length, function (){
-    
+    insertCities(cities);
   });
 
   for(var i = 0; i < urls.length; i++){
