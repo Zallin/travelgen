@@ -1,12 +1,38 @@
-var http = require('http'),
-    router = require('./router.js'),
-    parser = require('./parser.js'),
-    tape = require('tape');
+var express = require('express'),
+    swig = require('swig'),
+    tape = require('tape'),
+    MongoClient = require('mongodb').MongoClient,
+    CitiesDAO = require('./db.js');
 
-router.get('/', function(req, res){
-  res.end();
+MongoClient.connect('mongodb://localhost/travel', function (err, connection){
+  if(err) throw err;
+
+  var app = express();
+
+  var db = new CitiesDAO(connection);
+
+  app.engine('html', swig.renderFile);
+
+  app.use(express.static('public'));
+
+  app.set('view engine', 'html');
+
+  app.get('/', function (req, res, next){
+    db.getCity(function(err, city){
+      if(err) return next(err);
+
+      res.render('index', {
+        city : city.name
+      });
+    });
+  });
+
+  app.use(function (err, req, res, next){
+    res.status(500).send();
+  });
+
+  app.listen(3000, function (){
+    console.log('listening');
+  });
+
 });
-
-var server = http.createServer(router.handler);
-
-server.listen(3000);
