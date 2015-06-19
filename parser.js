@@ -36,7 +36,7 @@ function insertCities(array){
       return {name : el, rnd : Math.random()}
     });
 
-    db.collection('cities').insertMany(cities, function (err, docs){
+    db.collection('cities').insertMany(cities, function (err, docs){coa
       if(err) throw err;
     });
   })
