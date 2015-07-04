@@ -1,1 +1,31 @@
+body{
+  background-color: #363945;
+}
 
+h1, h2, h4, h5, p{
+  color : #fff;
+}
+
+.img{
+  max-width : 600px;
+  max-height : 400px;
+  display: inline-block;
+}
+
+.weather{
+  margin-top: 15px;
+  text-align: justify;
+}
+
+.weather::after{
+  content:''; display:inline-block; width:100%;
+}
+
+.weather div{
+  color : #fff;
+  display : inline-block;
+  min-width: 150px;
+  border: 1px solid #fff;
+  padding: 15px;
+  margin-top : 10px;
+}

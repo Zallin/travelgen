@@ -1,19 +1,23 @@
 var express = require('express'),
     swig = require('swig'),
-    CitiesDAO = require('./db.js'),
-    config = require('./config.json'),
-    async = require('async');
-
-var tape = require('tape');
+    config = require('./config.json');
 
 var Flickr = require('flickrapi'),
     MongoClient = require('mongodb').MongoClient;
 
-var db, flickr;
+var async = require('async');
+
+var app = express();
+
+app.engine('html', swig.renderFile);
+
+app.use(express.static('public'));
+
+app.set('view engine', 'html');
 
 async.series([
   function (cb){
-    MongoClient.connect('mongodb://localhost/travel', function (err, db){
+    MongoClient.connect(config.connection, function (err, db){
       if(err) return cb(err, null);
 
       cb(null, db);
@@ -34,28 +38,9 @@ async.series([
 ], function (err, res){
   if(err) throw err;
 
-  db = new CitiesDAO(res[0]);
-  flickr = res[1];
-});
+  res.push(app);
 
-var app = express();
-
-app.engine('html', swig.renderFile);
-
-app.use(express.static('public'));
-
-app.set('view engine', 'html');
-
-app.get('/', function (req, res, next){
-
-  db.getCity(function(err, city){
-    if(err) return next(err);
-
-    res.render('index', {
-      city : city.name
-    });
-
-  });
+  require('./routes').apply(null, res);
 });
 
 app.use(function (err, req, res, next){

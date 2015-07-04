@@ -6,16 +6,60 @@
 </head>
 <body>
   <div class="row">
-    <div class="large-8 large-offset-2 medium-10 medium-offset-1 small-12">
-      <h1>{{city}}</h1>
-      <div class="photos">
-        {{photo}}
-      </div>
-      <div class="weather">
+      <h1>Destination: {{city}}</h1>
+  </div>
 
-      </div>
+  <div class="row">
+    <h2>Pictures</h2>    
+    <div class='photos'>
+      {% for url in photos %}
+        <img src="{{url}}"></img>
+      {% endfor %}
     </div>
   </div>
+
+  {% if weather.length %}
+  <div class="row">
+    <h2>Weather</h2>
+    <div class="weather">
+      {% for day in weather %}
+        <div>
+          <h4></h4>
+          <h5>{{day.main}}</h4>
+          <p>{{day.desc}}</p>
+          <p>Temp : {{day.temp}} C</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+  
+  <script>
+    (function () {
+      var months = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December'
+      ]
+      
+      window.onload = function (){
+        var heads = document.querySelectorAll('.weather h4');
+        for(var i = 0; i < heads.length; i++){
+          var date = new Date(new Date().getTime() + i * 24 * 60 * 60 * 1000);
+          heads[i].textContent = date.getDate() + ' ' + months[date.getMonth()];
+        }
+      }
+    })()
+  </script>
 
   <link rel="stylesheet" href="/normalize.css">
   <link rel="stylesheet" href="/foundation.min.css">
